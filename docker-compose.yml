@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: docker/Dockerfile
+    container_name: flet_geoportal-frontend
+    ports:
+      - "8550:8550"
+    volumes:
+      - ./frontend/app:/app
+    restart: unless-stopped
