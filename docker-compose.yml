@@ -1,5 +1,27 @@
 version: '3.8'
 services:
+  database:
+    build:
+      context: ./database
+      dockerfile: docker/Dockerfile
+    container_name: flet_geoportal-database
+    volumes:
+      - ./database/data:/var/lib/postgresql
+      - ./database/dumps:/dumps
+    environment:
+      - POSTGRES_DBNAME=${POSTGRES_DBNAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - TIMEZONE=${TIMEZONE}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "docker", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: always
+
   backend:
     build:
       context: ./backend
