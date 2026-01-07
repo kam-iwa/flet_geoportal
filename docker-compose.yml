@@ -1,5 +1,23 @@
 version: '3.8'
 services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    container_name: flet_geoportal-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONBUFFERED=1
+    volumes:
+      - ./backend/app:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   frontend:
     build:
       context: ./frontend
@@ -7,6 +25,10 @@ services:
     container_name: flet_geoportal-frontend
     ports:
       - "8550:8550"
+    environment:
+      - PYTHONBUFFERED=1
     volumes:
       - ./frontend/app:/app
+    depends_on:
+      - backend
     restart: unless-stopped
