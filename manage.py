@@ -13,16 +13,16 @@ if __name__ == "__main__":
         sys.exit(-1)
 
     if sys.argv[1].lower() == "up":
-        print(f"Run API. \n{'=' * 25}")
+        print(f"Run APP. \n{'=' * 25}")
         subprocess.run(["docker", "compose", "up"])
     elif sys.argv[1].lower() == "build":
-        print(f"Build API.\n{'=' * 25}")
+        print(f"Build APP.\n{'=' * 25}")
         subprocess.run(["docker", "compose", "build"])
     elif sys.argv[1].lower() == "restart":
-        print(f"Restart API.\n{'=' * 25}")
+        print(f"Restart APP.\n{'=' * 25}")
         subprocess.run(["docker", "compose", "restart"])
     elif sys.argv[1].lower() == "down":
-        print(f"Exit API.\n{'=' * 25}")
+        print(f"Exit APP.\n{'=' * 25}")
         subprocess.run(["docker", "compose", "down"])
     else:
         print(f"Invalid parameter. Program will exit now.\n{'=' * 25}")

@@ -12,6 +12,8 @@ services:
       - POSTGRES_DBNAME=${POSTGRES_DBNAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
       - TIMEZONE=${TIMEZONE}
     ports:
       - "5432:5432"
@@ -30,15 +32,24 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - POSTGRES_DBNAME=${POSTGRES_DBNAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
       - PYTHONBUFFERED=1
     volumes:
       - ./backend/app:/app
+    depends_on:
+      database:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/status", "|| exit 1"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 10
+      # start_period: 60s
 
   frontend:
     build:
@@ -52,5 +63,6 @@ services:
     volumes:
       - ./frontend/app:/app
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
