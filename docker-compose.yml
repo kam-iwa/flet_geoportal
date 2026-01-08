@@ -37,6 +37,9 @@ services:
       - POSTGRES_PASS=${POSTGRES_PASS}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
+      - SECRET_KEY=${SECRET_KEY}
+      - ADMIN_LOGIN=${ADMIN_LOGIN}
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
       - PYTHONBUFFERED=1
     volumes:
       - ./backend/app:/app
@@ -45,11 +48,10 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/status", "|| exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/status"]
       interval: 30s
       timeout: 10s
       retries: 10
-      # start_period: 60s
 
   frontend:
     build:

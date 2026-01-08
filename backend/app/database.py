@@ -1,5 +1,10 @@
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import text
+
+class Base(DeclarativeBase):
+    pass
 
 class Database:
     def __init__(self):
@@ -11,13 +16,11 @@ class Database:
 
         self.database_url = f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_pass}@{self.postgres_host}:{self.postgres_port}/{self.postgres_dbname}"
 
-        self.engine = create_async_engine(self.database_url, echo=False)
+        self.engine = create_async_engine(self.database_url, echo=True)
         self.async_session = async_sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 
 db = Database()
-engine = db.engine
-async_session = db.async_session
 
 async def get_db() -> AsyncSession:
-    async with async_session() as session:
+    async with db.async_session() as session:
         yield session

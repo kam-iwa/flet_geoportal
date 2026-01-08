@@ -7,5 +7,7 @@ __pycache__/
 .venv
 .idea
 
+.env.*
+
 database/data/
 database/dumps/
