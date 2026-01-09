@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import text
 from starlette.responses import JSONResponse
 
-from services.system import hash_password
 from database import get_db
+from models.system import UserLogin
+from services.system import UserService, get_token
 
 router = APIRouter()
 
@@ -17,24 +18,26 @@ async def get_status(db = Depends(get_db)) -> JSONResponse:
     except Exception as e:
         return JSONResponse(content = {"status": f"{e.args}"}, status_code=400)
     
-@router.get("/login")
+@router.post("/login")
 async def login(
-        login: str,
-        password: str,
+        request: UserLogin,
         db = Depends(get_db)
 ) -> JSONResponse:
-    password_hash = hash_password(password)
-    user_query = await db.execute(text("""
-                          SELECT u.id, u.name, u.password_hash 
-                          FROM metadata.user as u
-                          WHERE u.name = :login
-                          """), {"login": login})
-    user = user_query.fetchone()
+    user = await UserService().authenticate(db, request.login, request.password)
     
     if user is None:
-        return JSONResponse(content = {"error": "Invalid login or password"}, status_code = 200)
+        return JSONResponse(content = {"error": "Invalid login or password"}, status_code = 401)
     
-    if user[2] != password_hash:
-        return JSONResponse(content = {"error": "Invalid login or password"}, status_code = 200)
+    token = await UserService().create_token(
+        data={"id": str(user["id"]), "name": user["name"]} 
+    )
 
-    return JSONResponse(content = {"token": "###"}, status_code = 200)
+    return JSONResponse(content = {"token": token}, status_code = 200)
+
+@router.post("/check_token")
+async def check_token(token: dict = Depends(get_token)) -> JSONResponse:
+    
+    if token is None:
+        return JSONResponse(content = {"status": "Invalid token"}, status_code = 401)
+    
+    return JSONResponse(content = {"status": "OK"}, status_code = 200)
