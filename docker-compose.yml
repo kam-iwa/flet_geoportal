@@ -39,7 +39,7 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
       - SECRET_KEY=${SECRET_KEY}
       - ADMIN_LOGIN=${ADMIN_LOGIN}
-      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - PYTHONBUFFERED=1
     volumes:
       - ./backend/app:/app
