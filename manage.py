@@ -4,7 +4,15 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("parameter", nargs='?', help=" - Available parameters: `up`, `build`, `restart`, `down`. Description of parameters is available in readme file.")
+parser.add_argument("-e", "--env-file", type=str, help="Path to alternative .env file (e.g., .env.production, .env.development)")
 args = parser.parse_args()
+
+COMMANDS = {
+    "up": "Run APP",
+    "build": "Build APP",
+    "restart": "Restart APP",
+    "down": "Exit APP"
+}
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -12,18 +20,19 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(-1)
 
-    if sys.argv[1].lower() == "up":
-        print(f"Run APP. \n{'=' * 25}")
-        subprocess.run(["docker", "compose", "up"])
-    elif sys.argv[1].lower() == "build":
-        print(f"Build APP.\n{'=' * 25}")
-        subprocess.run(["docker", "compose", "build"])
-    elif sys.argv[1].lower() == "restart":
-        print(f"Restart APP.\n{'=' * 25}")
-        subprocess.run(["docker", "compose", "restart"])
-    elif sys.argv[1].lower() == "down":
-        print(f"Exit APP.\n{'=' * 25}")
-        subprocess.run(["docker", "compose", "down"])
+    command = sys.argv[1].lower()
+    
+    if command in COMMANDS:
+        print(f"{COMMANDS[command]}.\n{'=' * 25}")
+        
+        docker_command = ["docker", "compose"]
+        
+        if args.env_file:
+            docker_command.extend(["--env-file", args.env_file])
+        
+        docker_command.append(command)
+        
+        subprocess.run(docker_command)
     else:
         print(f"Invalid parameter. Program will exit now.\n{'=' * 25}")
         parser.print_help()
