@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from sqlalchemy import text
 
 from database import db, Base
+from routings.layers import router as layers_router
 from routings.system import router as system_router
 from services.system import hash_password
 
@@ -38,3 +39,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(system_router)
+app.include_router(layers_router)

@@ -5,3 +5,7 @@ SQLAlchemy==2.0.45
 asyncpg==0.30.0
 cryptography==46.0.3
 PyJWT==2.10.1
+geopandas==1.1.2
+python-multipart==0.0.21
+GeoAlchemy2==0.18.1
+psycopg2-binary==2.9.11

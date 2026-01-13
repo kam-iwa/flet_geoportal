@@ -49,7 +49,7 @@ class UserService:
         encoded_jwt = jwt.encode(token_data, os.getenv("SECRET_KEY"), algorithm="HS256")
         return encoded_jwt
     
-    async def verify_token(self, token: str) -> dict:
+    async def verify_token(self, token: str) -> dict | None:
         try:
             payload = jwt.decode(
                 token,
