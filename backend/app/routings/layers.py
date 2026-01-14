@@ -19,8 +19,11 @@ async def get_layers(
     except Exception as e:
         return JSONResponse(content = {"status": f"{e.args}"}, status_code=400)
     
-#TODO dodanie get /layers/<layer_name>, delete /layers/<layer_name>
-    
+#TODO
+@router.get("/layers/<layer_name>")
+async def get_layer() -> JSONResponse:
+    return None
+        
 @router.post("/layers")
 async def new_layer(
     file: UploadFile,
@@ -30,3 +33,8 @@ async def new_layer(
 ) -> JSONResponse:
     output = await LayerService().add_layer(db, token, file, layer_name)
     return JSONResponse(content = output[0], status_code=output[1])
+
+#TODO
+@router.delete("/layers/<layer_name>")
+async def delete_layer() -> JSONResponse:
+    return None

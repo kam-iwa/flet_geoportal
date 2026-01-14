@@ -31,7 +31,7 @@ class LayerService():
     async def get_layer(self, db: AsyncSession) -> dict:
         return None
     
-    async def add_layers(self, db: AsyncSession, token: dict | None, file: UploadFile, layer_name: str) -> tuple:
+    async def add_layers(self, db: AsyncSession, token: dict | None, file: UploadFile, layer_name: str) -> tuple[dict, int]:
         if token is None:
             return {"error": f"You are not logged in."}, 401
 
